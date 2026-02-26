@@ -1,0 +1,48 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+#define MAX 10
+#define INF 999999
+
+int main() {
+    int n;
+    int cost[MAX][MAX];
+
+    cout << "Enter number of cities: ";
+    cin >> n;
+
+    cout << "Enter cost matrix:\n";
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j < n; j++) {
+            cin >> cost[i][j];
+        }
+    }
+
+    int cities[MAX];
+    for(int i = 1; i < n; i++) {
+        cities[i - 1] = i;
+    }
+
+    int minCost = INF;
+
+    // Generate all permutations
+    do {
+        int currentCost = 0;
+        int k = 0;
+
+        for(int i = 0; i < n - 1; i++) {
+            currentCost += cost[k][cities[i]];
+            k = cities[i];
+        }
+
+        currentCost += cost[k][0]; // return to starting city
+
+        minCost = min(minCost, currentCost);
+
+    } while(next_permutation(cities, cities + n - 1));
+
+    cout << "Minimum travelling cost: " << minCost;
+
+    return 0;
+}
