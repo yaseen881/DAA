@@ -1,0 +1,11 @@
+
+# (See the source for the full code)
+
+tree = Tree()
+lst = [13, 7, 24, 15, 4, 29, 20, 16, 19, 1, 5, 22, 17]
+
+for item in lst:
+    tree.insert(item)
+
+tree.printTop2Tiers()
+print(tree.find(16))
