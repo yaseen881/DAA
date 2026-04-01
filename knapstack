@@ -1,0 +1,43 @@
+def knapSack_01(capacity, weights, values):
+  
+    Solves the 0/1 Knapsack problem using dynamic programming.
+
+    Args:
+        capacity (int): The maximum weight capacity of the knapsack.
+        weights (list of int): A list of weights of the items.
+        values (list of int): A list of values of the items.
+
+    Returns:
+        int: The maximum value that can be obtained within the capacity.
+    """
+    n = len(values)
+    # Create a 2D DP table with size (n+1) x (capacity+1), initialized to 0
+    # dp[i][w] will store the maximum value using the first 'i' items with capacity 'w'
+    dp = [[0 for _ in range(capacity + 1)] for _ in range(n + 1)]
+
+    # Build the table in a bottom-up manner
+    for i in range(1, n + 1):
+        for w in range(capacity + 1):
+            current_weight = weights[i-1]
+            current_value = values[i-1]
+
+            # If the current item's weight is less than or equal to the current capacity 'w'
+            if current_weight <= w:
+                # Decide whether to include the item or exclude it
+                # Include: value of current item + max value from remaining capacity (w - current_weight) using previous items (i-1)
+                # Exclude: max value without including the current item (using previous items (i-1) with the same capacity 'w')
+                dp[i][w] = max(current_value + dp[i-1][w - current_weight], dp[i-1][w])
+            else:
+                # If the item cannot fit, the max value is the same as without the item
+                dp[i][w] = dp[i-1][w]
+
+    # The result is the value at the bottom-right corner of the table
+    return dp[n][capacity]
+
+# Example Usage:
+values = [60, 100, 120]
+weights = [10, 20, 30]
+capacity = 50
+max_value = knapSack_01(capacity, weights, values)
+
+print(f"Maximum value (0/1 Knapsack): {max_value}") # Output: Maximum value (0/1 Knapsack): 220
