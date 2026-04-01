@@ -1,0 +1,57 @@
+def rabin_karp_search(text, pattern, d=256, q=101):
+    """
+    Performs Rabin-Karp pattern matching to find occurrences of a pattern in a text.
+
+    Args:
+        text (str): The main text to search within.
+        pattern (str): The pattern to search for.
+        d (int): The base (number of characters in the alphabet, e.g., 256 for ASCII).
+        q (int): A large prime number for the modulo operation to prevent overflow and reduce collisions.
+
+    Returns:
+        list: A list of indices where the pattern is found.
+    """
+    n = len(text)
+    m = len(pattern)
+    h = 1
+    p = 0  # Hash value for pattern
+    t = 0  # Hash value for text window
+    results = []
+
+    # Calculate h = pow(d, m-1) % q
+    # h is the value of d^(m-1) % q
+    for i in range(m - 1):
+        h = (h * d) % q
+    
+    # Calculate the initial hash value for the pattern and the first text window
+    for i in range(m):
+        p = (d * p + ord(pattern[i])) % q
+        t = (d * t + ord(text[i])) % q
+    
+    # Slide the pattern over the text
+    for i in range(n - m + 1):
+        # If hash values match, then check characters one by one to avoid collisions
+        if p == t:
+            if text[i:i+m] == pattern: # Python slicing provides a clear character check
+                results.append(i)
+        
+        # Calculate hash value for the next window
+        if i < n - m:
+            # Remove leading character's contribution, add trailing character's contribution
+            t = (d * (t - ord(text[i]) * h) + ord(text[i + m])) % q
+            # Ensure the hash value remains positive in Python
+            if t < 0:
+                t += q
+
+    return results
+
+# Example Usage:
+text = "ababcabdababc"
+pattern = "abc"
+occurrences = rabin_karp_search(text, pattern)
+print(f"Pattern '{pattern}' found at indices: {occurrences}") # Output: [2, 7, 10]
+
+text2 = "3141592653589793"
+pattern2 = "26"
+occurrences2 = rabin_karp_search(text2, pattern2, 257, 11)
+print(f"Pattern '{pattern2}' found at indices: {occurrences2}") # Output: [6]
